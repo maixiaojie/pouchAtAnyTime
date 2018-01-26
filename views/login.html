@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{d.title}}</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+   	<link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
+    <style type="text/css">
+
+    </style>
+</head>
+
+<body>
+<header class="bar bar-nav">
+  <h1 class='title'>登录</h1>
+</header>
+<div class="content">
+  <div class="list-block">
+    <ul>
+      <!-- Text inputs -->
+      <li>
+        <div class="item-content">
+          <div class="item-media"><i class="icon icon-form-name"></i></div>
+          <div class="item-inner">
+            <div class="item-title label">手机号</div>
+            <div class="item-input">
+              <input id="tel" type="text" placeholder="手机号">
+              <input id="code_id" type="hidden">           
+            </div>
+            <a id="getCode" class="button button-fill button-primary col-15"><span class="">获取验证码</span></a>
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="item-content">
+          <div class="item-media"><i class="icon icon-form-name"></i></div>
+          <div class="item-inner">
+            <div class="item-title label">验证码</div>
+            <div class="item-input">
+              <input id="code" type="text" placeholder="验证码">
+            </div>
+          </div>
+        </div>
+      </li>
+      <!-- Switch (Checkbox) -->
+      <li>
+        <div class="item-content">
+          <div class="item-media"><i class="icon icon-form-toggle"></i></div>
+          <div class="item-inner">
+            <div class="item-title label">自动登录</div>
+            <div class="item-input">
+              <label class="label-switch">
+                <input type="checkbox">
+                <div class="checkbox"></div>
+              </label>
+            </div>
+          </div>
+        </div>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="content-block">
+    <div class="row">
+      <div class="col-50"><a href="#" class="button button-big button-fill button-danger">取消</a></div>
+      <div class="col-50"><a id="login" href="javascript:;" class="button button-big button-fill button-success">登录</a></div>
+    </div>
+  </div>
+</div>
+</body>
+
+<script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#getCode').on('click', function() {
+			var tel = $('#tel').val();
+			if($.trim(tel).length != 11) {
+				$.toast('请输入正确的手机号！');
+				$('#tel').focus();
+			}else {
+				$.get('./getCode/'+ tel, function(res) {
+					if(res.data) {
+						var rsJson = JSON.parse(res.data);
+						console.log(rsJson)
+						if(rsJson.code === 0) {
+							$.toast(rsJson.message)
+							if(rsJson.status) {
+								//短信发送成功
+								var code_id = rsJson.data.code_id;
+								$('#code_id').val(code_id);
+							}else {
+								//短信发送失败                
+							}							
+						}else {
+							$.toast('短信发送失败，请重试~')
+						}
+					}
+				})
+			}
+			
+		})
+		$('#login').on('click', function() {
+			var tel = $.trim($('#tel').val());
+			var code_id = $.trim($('#code_id').val());
+			var code = $.trim($('#code').val());
+			if(tel.length == 0 || code_id.length == 0 || code.length== 0) {
+				$.toast('请填完完整信息');
+			}else {
+				var sendData = {
+					tel : tel,
+					code_id : code_id,
+					code : code
+				};
+				$.post('/logins', sendData, function(res) {
+					console.log(res);
+          if(res && res.data) {
+            var rsJson = JSON.parse(res.data.body);            
+            if(rsJson.status) {
+              //登录成功
+              var cookies = res.data.cookie[0] || '';
+              var sessionId = rsJson.data.sessionId;
+              if(localStorage != undefined) {
+                localStorage.setItem('xxCookies', cookies);
+                localStorage.setItem('xxSessionId', sessionId);
+              }
+              //保存cookie信息
+              $.toast('终于登录成功了~');
+              location.href = "/index";
+            }else {
+              //登录失败了
+              $.toast('登录失败了~再试一下?')
+            }
+          }
+				})
+			}
+		})
+	})
+</script>
+</html>

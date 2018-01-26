@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{d.title}}</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
+    <style type="text/css">
+
+    </style>
+</head>
+
+<body>
+    <header class="bar bar-nav">
+        <h1 class='title'>首页</h1>
+    </header>
+    <div class="content">
+        <div class="content-block">
+            <div class="buttons-row">
+                <a href="#tab1" class="tab-link active button">快捷打卡</a>
+                <a href="#tab2" class="tab-link button">定时打卡</a>
+                <a href="#tab3" class="tab-link button">设置</a>
+            </div>
+        </div>
+        <div class="tabs">
+            <div id="tab1" class="tab active">
+                <div class="content-block">
+                    <p>tips: 默认获取设置里的地理位置信息</p>
+                    <p><a href="javascript:;" id="cardBtn" class="button button-big button-dark">打卡</a></p>
+                    <div id="record" class="content-padded">
+                      
+                    </div>
+                </div>
+            </div>
+            <div id="tab2" class="tab">
+                <div class="content-block">
+                  <div class="list-block">
+                    <p>tips: 开启后也可以使用快捷打卡(目前用不了)</p>
+                    <ul>
+                      <li>
+                        <div class="item-content">
+                          <div class="item-media"><i class="icon icon-form-toggle"></i></div>
+                          <div class="item-inner">
+                            <div class="item-title label">是否开启</div>
+                            <div class="item-input">
+                              <label class="label-switch">
+                                <input type="checkbox">
+                                <div class="checkbox"></div>
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+            </div>
+            <div id="tab3" class="tab">
+                <div class="content-block">
+                    <div class="list-block">
+                      <p>基本设置：</p>
+                      <ul>
+                          <li>
+                              <div class="item-content">
+                                  <div class="item-media"><i class="icon icon-form-name"></i></div>
+                                  <div class="item-inner">
+                                      <div class="item-title label">cookies</div>
+                                      <div class="item-input">
+                                          <input id="cookies" type="text" placeholder="cookies" value="" readonly="readonly">
+                                      </div>
+                                  </div>
+                              </div>
+                          </li>
+                          <li>
+                              <div class="item-content">
+                                  <div class="item-media"><i class="icon icon-form-name"></i></div>
+                                  <div class="item-inner">
+                                      <div class="item-title label">latitude</div>
+                                      <div class="item-input">
+                                          <input id="latitude" type="text" placeholder="latitude" value="39.95219284890858">
+                                      </div>
+                                  </div>
+                              </div>
+                          </li>
+                          <li>
+                              <div class="item-content">
+                                  <div class="item-media"><i class="icon icon-form-name"></i></div>
+                                  <div class="item-inner">
+                                      <div class="item-title label">longitude</div>
+                                      <div class="item-input">
+                                          <input id="longitude" type="text" placeholder="longitude" value="116.3506684138196">
+                                      </div>
+                                  </div>
+                              </div>
+                          </li>
+                      </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    var cookies = '',
+        sessionId = '';
+    if (localStorage != undefined) {
+        cookies = localStorage.getItem('xxCookies');
+        sessionId = localStorage.getItem('xxSessionId');
+    }
+    $('#cookies').val(cookies)
+    $('#cardBtn').on('click', function() {
+      if(!cookies) {
+        $.toast('获取不到你的登录信息了');
+        location.href="/login";
+      }else {
+          var latitude = $.trim($('#latitude').val());
+          var longitude = $.trim($('#longitude').val());
+          var sendData = {
+            latitude: latitude,
+            longitude: longitude,
+            cookies: cookies
+          };
+          $.post('/card', sendData, function(res) {
+            if(res && res.data) {
+              var rsJson = JSON.parse(res.data);
+              $.toast(rsJson.message);
+              var msg = rsJson.data.msg;
+              $('#record').append('<p>' + msg + '</p>');
+            }
+          })
+
+      }
+    })
+})
+</script>
+
+</html>
