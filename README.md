@@ -1,10 +1,31 @@
 # pouchAtAnyTime
 
-薪人薪事打卡系统破解，随时随地无限制打卡。无心之作，请勿滥用，欢迎技术交流。
+薪人薪事打卡系统破解，随时随地无限制打卡。无心之作，请勿滥用，欢迎技术交流，喜欢就给个star吧。
 
-欢迎star, 有疑问可以提issue或者email(tracywyj@gmail.com)
+ 有疑问可以提issue或者email(tracywyj@gmail.com)
 
 支持多端（移动端效果最佳）。
+
+### 重要说明
+
+该漏洞已经告知薪人薪事了，什么时候修复还不清楚。
+
+
+### 更新记录
+
+*20180206*
+- 上次告诉薪人薪事之后，他们一周后对代码进行了一次更新。
+但是并没有从根源解决这个问题，很快就能做出对应的调整。
+
+```
+var l = "longitude=" + sendData.longitude + "&latitude=" + sendData.latitude + "&accuracy=" + sendData.accuracy;
+var signature = CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA1(l, "xrxs&qjyd"));
+```
+
+- 添加了退出登录的功能
+
+
+
 
 ## 功能说明
 
@@ -56,23 +77,6 @@
 
 - 浏览器打开 http://localhost:18080
 
-### other
-
-该漏洞已经转告薪人薪事工程师了，什么时候修复还不清楚。
-
-
-### 更新记录
-
-*20180206*
-- 上次告诉薪人薪事之后，他们一周后对代码进行了一次更新。
-但是并没有从根源解决这个问题，很快我又解决了这个问题。
-
-```
-var l = "longitude=" + sendData.longitude + "&latitude=" + sendData.latitude + "&accuracy=" + sendData.accuracy;
-sendData.signature = CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA1(l, "xrxs&qjyd"));
-```
-
-- 添加了退出登录的功能
 
 
 
