@@ -1,5 +1,5 @@
 var request = require('request');
-
+var CryptoJS = require("crypto-js");
 var card = {
     sendSms: function(tel, callback) {
         var sendData = { mobile: tel };
@@ -27,11 +27,16 @@ var card = {
         })
     },
     punch : function(data, cb) {
+        
     	var sendData = {
+            accuracy: 199,
     	    latitude : data.latitude,
     	    longitude: data.longitude
     	};
+        var l = "longitude=" + sendData.longitude + "&latitude=" + sendData.latitude + "&accuracy=" + sendData.accuracy;
+        sendData.signature = CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA1(l, "xrxs&qjyd"));
     	var cookie = data.cookies;
+        console.log(JSON.stringify(sendData))
     	function callback(err, res, body) {
     	    cb(body)
     	};

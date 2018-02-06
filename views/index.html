@@ -100,6 +100,7 @@
                               </div>
                           </li>
                       </ul>
+                      <div class="col-50"><a id="logout" style="margin-top: 20px;" id="login" href="javascript:;" class="button button-big button-fill button-success">退出登录</a></div>
                     </div>
                 </div>
             </div>
@@ -117,6 +118,14 @@ $(document).ready(function() {
         sessionId = localStorage.getItem('xxSessionId');
     }
     $('#cookies').val(cookies)
+    //退出登录
+    $('#logout').on('click', function() {
+      if (localStorage != undefined) {
+          localStorage.removeItem('xxCookies');
+          localStorage.removeItem('xxSessionId');
+          location.reload();
+      }
+    })
     $('#cardBtn').on('click', function() {
       if(!cookies) {
         $.toast('获取不到你的登录信息了');
